@@ -20,7 +20,6 @@ import {
 import { enableWallet } from '../../src/nexus/servicer/provider';
 import { clickConnect } from '../../src/nexus/helper/notification';
 import { wallet_enable, wallet_fullOwnership_getLiveCells } from '../../src/nexus/servicer/rpc';
-import { Sleep } from '../../src/nexus/util/helper';
 import { BrowserContext, Page } from 'playwright';
 
 injectionTestStatus();
@@ -40,6 +39,7 @@ describe.only('popup', function () {
     });
   });
   beforeEach(async () => {
+    console.log('--getNewPage--');
     page = await nexusWallet.popup.getNewPage();
   });
 
@@ -513,7 +513,6 @@ describe.only('popup', function () {
       await step('not eq ', async () => {
         expect(beforeNetworkResponse).not.toBe(afterChangeNetworkResponse);
       });
-      await Sleep(10000);
     });
     it('change to bad url', async () => {
       await step('add bad url', async () => {
@@ -554,6 +553,7 @@ describe.only('popup', function () {
     for (let i = 0; i < pages.length; i++) {
       await pages[i].close();
     }
+    console.log('--afterEach--');
   });
   afterAll(async () => {
     await browser.close();
