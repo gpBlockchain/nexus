@@ -23,7 +23,7 @@ import { wallet_enable, wallet_fullOwnership_getLiveCells } from '../../src/nexu
 import { BrowserContext, Page } from 'playwright';
 
 injectionTestStatus();
-describe.only('popup', function () {
+describe('popup', function () {
   let browser: BrowserContext;
   let nexusWallet: NexusWallet;
   let page: Page;
@@ -549,10 +549,13 @@ describe.only('popup', function () {
 
   afterEach(async () => {
     await failedTestScreenshot(browser);
-    // const pages = browser.pages();
-    // for (let i = 0; i < pages.length; i++) {
-    //   await pages[i].close();
-    // }
+    const pages = browser.pages();
+    for (let i = 0; i < pages.length; i++) {
+      if (pages[i].url() === 'about:blank') {
+        continue;
+      }
+      await pages[i].close();
+    }
     console.log('--afterEach--');
   });
   afterAll(async () => {
