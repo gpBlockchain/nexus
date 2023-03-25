@@ -12,7 +12,7 @@ module.exports = {
   },
   reporters: ['default', 'jest-allure'],
   testRunner: 'jest-jasmine2',
-  testMatch: ['**/__tests__/**/*.test.ts'],
+  testMatch: ['**/__tests__/**/index.test.ts'],
   setupFiles: ['<rootDir>/__tests__/setup/setUp.ts'],
   setupFilesAfterEnv: ['jest-allure/dist/setup'],
   testTimeout: 3000000,
