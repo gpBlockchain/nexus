@@ -549,10 +549,10 @@ describe.only('popup', function () {
 
   afterEach(async () => {
     await failedTestScreenshot(browser);
-    const pages = browser.pages();
-    for (let i = 0; i < pages.length; i++) {
-      await pages[i].close();
-    }
+    // const pages = browser.pages();
+    // for (let i = 0; i < pages.length; i++) {
+    //   await pages[i].close();
+    // }
     console.log('--afterEach--');
   });
   afterAll(async () => {
