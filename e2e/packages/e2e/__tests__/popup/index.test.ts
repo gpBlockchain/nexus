@@ -20,7 +20,6 @@ import {
 import { enableWallet } from '../../src/nexus/servicer/provider';
 import { clickConnect } from '../../src/nexus/helper/notification';
 import { wallet_enable, wallet_fullOwnership_getLiveCells } from '../../src/nexus/servicer/rpc';
-import { Sleep } from '../../src/nexus/util/helper';
 import { BrowserContext, Page } from 'playwright';
 
 injectionTestStatus();
@@ -160,7 +159,11 @@ describe('popup', function () {
       let newPage: Page;
       await step(`goto white web:${whiteUrl}`, async () => {
         newPage = await browser.newPage();
-        await newPage.goto(`https://${whiteUrl}`);
+        if (whiteUrl.includes('localhost')) {
+          await newPage.goto(`http://${whiteUrl}`);
+        } else {
+          await newPage.goto(`https://${whiteUrl}`);
+        }
       });
       let ret: unknown;
       await step('send ckb.enable', async () => {
@@ -461,18 +464,13 @@ describe('popup', function () {
       await step('connected web', async () => {
         await nexusWallet.connect();
       });
-      await step('click network', async () => {
-        await newPage.click('#getNetworkName');
-      });
       await step('get network response', async () => {
         await newPage.locator('#networkNameResponse').innerText();
       });
       await step(`change network:${addTestNetOpt.name}`, async () => {
         await nexusWallet.popup.changeNetworkByName(addTestNetOpt.name);
       });
-      await step(`click network`, async () => {
-        await newPage.click('#getNetworkName');
-      });
+
       await step('get network response', async () => {
         await newPage.getByText(addTestNetOpt.name).innerText();
       });
@@ -502,9 +500,6 @@ describe('popup', function () {
         // await nexusWallet.popup.changeNetworkByName(addTestNetOpt.name)
         await nexusWallet.popup.changeNetworkByName('Mainnet');
       });
-      await step(`click network`, async () => {
-        await newPage.click('#getNetworkName');
-      });
       let afterChangeNetworkResponse: string;
       await step('get network response', async () => {
         afterChangeNetworkResponse = await newPage.locator('#networkNameResponse').innerText();
@@ -513,7 +508,6 @@ describe('popup', function () {
       await step('not eq ', async () => {
         expect(beforeNetworkResponse).not.toBe(afterChangeNetworkResponse);
       });
-      await Sleep(10000);
     });
     it('change to bad url', async () => {
       await step('add bad url', async () => {
@@ -552,6 +546,9 @@ describe('popup', function () {
     await failedTestScreenshot(browser);
     const pages = browser.pages();
     for (let i = 0; i < pages.length; i++) {
+      if (pages[i].url() === 'about:blank') {
+        continue;
+      }
       await pages[i].close();
     }
   });
